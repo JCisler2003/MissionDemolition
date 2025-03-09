@@ -3,6 +3,12 @@ using UnityEngine;
 public class Slingshot : MonoBehaviour
 {
 
+    [SerializeField] private LineRenderer rubber;
+    [SerializeField] private Transform firstPoint;
+    [SerializeField] private Transform secondPoint;
+
+    [SerializeField] public Configuration configuration;
+
     [Header("Inscribed")]
     public GameObject projectilePrefab;
     public float velocityMult = 10f;
@@ -14,6 +20,12 @@ public class Slingshot : MonoBehaviour
     public GameObject projectile;
     public bool aimingMode;
         // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+
+    void Start() {
+        rubber.SetPosition(0, firstPoint.position);
+        rubber.SetPosition(2, secondPoint.position);
+    }
 
     void OnMouseEnter()
     {
@@ -29,6 +41,23 @@ public class Slingshot : MonoBehaviour
 
     void Update()
     {
+        if(Input.GetMouseButton(0)) {
+            rubber.SetPosition(1, GetMousePositionInWorld());
+        }
+
+        Vector3 GetMousePositionInWorld() {
+            Vector3 mousePosition = Input.mousePosition;
+            mousePosition.z += Camera.main.transform.position.z;
+            Vector3 mousePositionInWorld = Camera.main.ScreenToWorldPoint(mousePosition);
+
+            // if(mousePositionInWorld.magnitude > configuration.Radius) {
+            //     mousePositionInWorld.Normalize();
+            //     mousePositionInWorld *= configuration.Radius;
+            // }
+
+            return  mousePositionInWorld;
+        }
+
         if(!aimingMode) return;
 
         Vector3 mousePos2D = Input.mousePosition;
